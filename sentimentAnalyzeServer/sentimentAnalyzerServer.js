@@ -32,20 +32,55 @@ app.get("/",(req,res)=>{
   });
 
 app.get("/url/emotion", (req,res) => {
-
-    return res.send({"happy":"90","sad":"10"});
+    getNLUInstance().analyze({
+        url: req.query.url,
+        features: {
+            emotion: {},
+        },
+    })
+      .then(resp => {
+          res.send(resp.result.emotion.document.emotion);
+      })
+      .catch(resp => res.send(resp));
 });
 
 app.get("/url/sentiment", (req,res) => {
-    return res.send("url sentiment for "+req.query.url);
+    getNLUInstance().analyze({
+        url: req.query.url,
+        features: {
+          sentiment: {},
+        },
+    })
+    .then(resp => {
+        res.send({data: resp.result.sentiment.document.label});
+    })
+    .catch(err => res.send(err));
 });
 
 app.get("/text/emotion", (req,res) => {
-    return res.send({"happy":"10","sad":"90"});
+    getNLUInstance().analyze({
+        text: req.query.text,
+        features: {
+            emotion: {},
+        },
+    })
+      .then(resp => {
+          res.send(resp.result.emotion.document.emotion);
+      })
+      .catch(resp => res.send(resp));
 });
 
 app.get("/text/sentiment", (req,res) => {
-    return res.send("text sentiment for "+req.query.text);
+    getNLUInstance().analyze({
+        text: req.query.text,
+        features: {
+          sentiment: {},
+        },
+    })
+    .then(resp => {
+        res.send({data: resp.result.sentiment.document.label});
+    })
+    .catch(err => res.send(err));
 });
 
 let server = app.listen(8080, () => {
